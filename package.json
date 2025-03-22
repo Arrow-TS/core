@@ -1,0 +1,32 @@
+{
+  "name": "@arrow-ts/core",
+  "version": "0.0.1",
+  "description": "core components of Arrow-Ts",
+  "author": "Pasindu Senanayakege",
+  "license": "MIT",
+  "homepage": "https://github.com/Arrow-TS",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "remote-publish": "tsc && cp package.json dist && cp README.md dist && cd dist && npm pack",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Arrow-TS/core.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "globals": "^15.14.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@types/jest": "^29.5.14",
+    "eslint": "9.22.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
+  }
+}
