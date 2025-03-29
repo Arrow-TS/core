@@ -1,4 +1,4 @@
-import {left, right, tryE, zipOrAccumulate, zipOrBind} from "../src";
+import {accumulate, left, right, tryE, zipOrAccumulate, zipOrBind} from "../src";
 
 describe("TryE", () => {
 
@@ -354,4 +354,29 @@ describe("ZipOrAccumulate", () => {
         expect(abcdefError).toStrictEqual(left(["A","B","C","D","E",'F']))
 
     })
+})
+
+
+describe("Accumulate", () => {
+
+
+    test("accumulate no lefts", () => {
+        const rights = [right("R1"), right("R2")]
+        const rightsE = accumulate(rights)
+        expect(rightsE).toStrictEqual(right(["R1","R2"]))
+    })
+
+    test("accumulate rights with lefts", () => {
+        const mixE = [right("R1"), right("R2"), left("L1"), left("L2")]
+        const lefts = accumulate(mixE)
+        expect(lefts).toStrictEqual(left(["L1","L2"]))
+    })
+
+
+    test("accumulate empty", () => {
+        const rights = []
+        const rightsE = accumulate(rights)
+        expect(rightsE).toStrictEqual(right([]))
+    })
+
 })

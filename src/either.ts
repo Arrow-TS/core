@@ -19,9 +19,9 @@ export abstract class Either<out L, out R>{
         return this as unknown as Left<L>|Right<R>
     }
 
-    onRight(handler: ((r: R) => void)|((r: R) => Promise<void>)):void|Promise<void>{};
+    onRight(handler: ((r: R) => void)|((r: R) => Promise<void>)){};
 
-    onLeft(handler: ((l: L) => void)|((l: L) => Promise<void>)):void|Promise<void>{};
+    onLeft(handler: ((l: L) => void)|((l: L) => Promise<void>)){};
 
     getOrDefault(r:R): R{
         return (this.mapLeft(()=>r) as unknown as Either<R, R>).get();
@@ -94,8 +94,8 @@ export class Left<out L> extends Either<L, never>{
         return new Left(response);
     }
 
-    onLeft(handler: ((l: L) => void)|((l: L) => Promise<void>)):void|Promise<void>{
-        return handler(this.val);
+    onLeft(handler: ((l: L) => void)|((l: L) => Promise<void>)){
+         void handler(this.val);
     }
     protected get(): L {
         return this.val;
@@ -119,7 +119,7 @@ export function right<T>(val:T):Either<never,T>{
     return new Right<T>(val)
 }
 
-export class Right<out R> extends Either<never, R> {
+export class Right< out R> extends Either<never, R> {
 
     constructor(val: R) {
         super()
@@ -152,8 +152,8 @@ export class Right<out R> extends Either<never, R> {
         return new Right(response);
     }
 
-    onRight(handler: ((r: R) => void)|((r: R) => Promise<void>)):void|Promise<void>{
-       return handler(this.val);
+    onRight(handler: ((r: R) => void)|((r: R) => Promise<void>)){
+         void handler(this.val);
     }
 
     protected get(): R {

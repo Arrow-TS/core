@@ -1,5 +1,6 @@
-import { NotEmptyReadOnlyArray } from "./types";
+import { NonEmptyReadOnlyArray } from "./types";
 import { Either, left, right } from "./either";
+import { isNotEmpty } from "./util";
 
 export function ensureExists<T,L>(val:T|null|undefined,l:L):Either<L,T>{
     if (val === null || typeof val == "undefined") {
@@ -19,37 +20,37 @@ export function ensureContains<T,L>(val:T[]|null|undefined,searchVal:T,l:L):Eith
 }
 
 function zipOrAccumulateInternal <L,A extends any[],B>(
-    argA:Either<NotEmptyReadOnlyArray<L>,A>, argB:Either<L,B>
-):Either<NotEmptyReadOnlyArray<L>,[...A,B]>{
+    argA:Either<NonEmptyReadOnlyArray<L>,A>, argB:Either<L,B>
+):Either<NonEmptyReadOnlyArray<L>,[...A,B]>{
     return argA.fold(
-        (lA)=> argB.fold<Either<NotEmptyReadOnlyArray<L>,[...A,B]>>(lB=>left([...lA,lB]), _=>  left([...lA])),
-        (rA)=> argB.fold<Either<NotEmptyReadOnlyArray<L>,[...A,B]>>(lB=>left([lB]), rB=>  right([...rA,rB] ))
+        (lA)=> argB.fold<Either<NonEmptyReadOnlyArray<L>,[...A,B]>>(lB=>left([...lA,lB]), _=>  left([...lA])),
+        (rA)=> argB.fold<Either<NonEmptyReadOnlyArray<L>,[...A,B]>>(lB=>left([lB]), rB=>  right([...rA,rB] ))
     )
 }
 
 export function zipOrAccumulate <L,A,B>(
     argA:Either<L,A>, argB:Either<L,B>
-):Either<NotEmptyReadOnlyArray<L>,[A,B]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B]>
 export function zipOrAccumulate <L,A,B,C>(
     argA:Either<L,A>, argB:Either<L,B>, argC:Either<L,C>
-):Either<NotEmptyReadOnlyArray<L>,[A,B,C]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B,C]>
 export function zipOrAccumulate <L,A,B,C,D>(
     argA:Either<L,A>, argB:Either<L,B>, argC:Either<L,C>, argD:Either<L,D>
-):Either<NotEmptyReadOnlyArray<L>,[A,B,C,D]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B,C,D]>
 export function zipOrAccumulate <L,A,B,C,D,E>(
     argA:Either<L,A>, argB:Either<L,B>, argC:Either<L,C>, argD:Either<L,D>, argE: Either<L,E>
-):Either<NotEmptyReadOnlyArray<L>,[A,B,C,D,E]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B,C,D,E]>
 export function zipOrAccumulate <L,A,B,C,D,E,F>(
     argA:Either<L,A>, argB:Either<L,B>, argC:Either<L,C>, argD:Either<L,D>, argE: Either<L,E>, argF: Either<L,F>
-):Either<NotEmptyReadOnlyArray<L>,[A,B,C,D,E,F]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B,C,D,E,F]>
 export function zipOrAccumulate <L,A,B,C,D,E,F,G>(
     argA:Either<L,A>, argB:Either<L,B>, argC:Either<L,C>, argD:Either<L,D>, argE: Either<L,E>, argF: Either<L,F>,
     argG: Either<L,G>
-):Either<NotEmptyReadOnlyArray<L>,[A,B,C,D,E,F,G]>
+):Either<NonEmptyReadOnlyArray<L>,[A,B,C,D,E,F,G]>
 export function zipOrAccumulate <L,A,B,C,D,E,F,G>(
     argA:Either<L,A>, argB:Either<L,B>, argC?:Either<L,C>, argD?:Either<L,D>, argE?: Either<L,E>, argF?: Either<L,F>,
     argG?: Either<L,G>
-):Either<NotEmptyReadOnlyArray<L>,[A,B]|[A,B,C]|[A,B,C,D]|[A,B,C,D,E]|[A,B,C,D,E,F]|[A,B,C,D,E,F,G]> {
+):Either<NonEmptyReadOnlyArray<L>,[A,B]|[A,B,C]|[A,B,C,D]|[A,B,C,D,E]|[A,B,C,D,E,F]|[A,B,C,D,E,F,G]> {
 
     const eitherAB =  zipOrAccumulateInternal<L,[A],B>(argA.map(r=>[r] as [A]).mapLeft(l=>[l]), argB)
 
@@ -156,3 +157,24 @@ export function tryE<R>(executor:()=>R|Promise<R>):Either<any, R> | Promise<Eith
     }
 }
 
+export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyArray<L>,readonly R[]>{
+   const { lefts, rights } =  eithers.reduce((preVal,currentVal)=>{
+        const currentValUnwrapped = currentVal.unwrap()
+        if(currentValUnwrapped.isRight()){
+            return {
+                ...preVal,
+                rights: [...preVal.rights, currentValUnwrapped.val ]
+            }
+        }else {
+            return {
+                ...preVal,
+                lefts: [...preVal.lefts,currentValUnwrapped.val ]
+            }
+        }
+    },{ lefts:[] as L[], rights:[] as R [] })
+
+    if(isNotEmpty(lefts)){
+        return left(lefts)
+    }
+    return right(rights)
+}
