@@ -178,3 +178,13 @@ export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyAr
     }
     return right(rights)
 }
+
+export function separateEithers<L,R>(eithers:Either<L,R>[]): [ReadonlyArray<L>, ReadonlyArray<R>]{
+    return eithers.reduce((previousVal:[ReadonlyArray<L>, ReadonlyArray<R>], either:Either<L,R>)=>{
+        const [ls,rs] = previousVal
+        return either.fold<[ReadonlyArray<L>, ReadonlyArray<R>]>(
+            (it)=> [[...ls, it],rs],
+            (it)=> [ls, [...rs,it]]
+        )
+    },[[],[]])
+}

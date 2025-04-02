@@ -1,4 +1,4 @@
-import {accumulate, left, right, tryE, zipOrAccumulate, zipOrBind} from "../src";
+import {accumulate, left, right, separateEithers, tryE, zipOrAccumulate, zipOrBind} from "../src";
 
 describe("TryE", () => {
 
@@ -359,7 +359,6 @@ describe("ZipOrAccumulate", () => {
 
 describe("Accumulate", () => {
 
-
     test("accumulate no lefts", () => {
         const rights = [right("R1"), right("R2")]
         const rightsE = accumulate(rights)
@@ -379,4 +378,31 @@ describe("Accumulate", () => {
         expect(rightsE).toStrictEqual(right([]))
     })
 
+})
+
+describe("SeparateEithers", ()=>{
+
+    test("lefts only", () => {
+        const eithers = [left("left1"), left("left2"), left("left3")]
+        const [lefts, rights] = separateEithers(eithers)
+        expect(lefts).toStrictEqual(["left1","left2","left3"])
+        expect(rights).toStrictEqual([])
+    })
+
+    test("rights only", () => {
+        const eithers = [right("right1"), right("right2"), right("right3")]
+        const [lefts, rights] = separateEithers(eithers)
+        expect(rights).toStrictEqual(["right1","right2","right3"])
+        expect(lefts).toStrictEqual([])
+    })
+
+    test("lefts and rights", () => {
+        const eithers = [
+            left("left1"), left("left2"), left("left3"),
+            right("right1"), right("right2"), right("right3")
+        ]
+        const [lefts, rights] = separateEithers(eithers)
+        expect(rights).toStrictEqual(["right1","right2","right3"])
+        expect(lefts).toStrictEqual(["left1","left2","left3"])
+    })
 })
