@@ -1,4 +1,4 @@
-import {accumulate, left, right, separateEithers, tryE, zipOrAccumulate, zipOrBind} from "../src";
+import { accumulate, left, right, separateEithers, tryE, zipOrAccumulate, zipOrBind } from "../src";
 
 describe("TryE", () => {
 

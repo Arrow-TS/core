@@ -2,14 +2,23 @@ import { NonEmptyReadOnlyArray } from "./types";
 import { Either, left, right } from "./either";
 import { isNotEmpty } from "./util";
 
-export function ensureExists<T,L>(val:T|null|undefined,l:L):Either<L,T>{
+export function ensure(func:()=>boolean):<L,T>(eitherParam:{left:L,right:T})=>Either<L,T>{
+     return <L,T>(eitherParam:{left:L,right:T})=>{
+         if(func()){
+             return right(eitherParam.right);
+         }
+         return left(eitherParam.left);
+     }
+}
+
+export function ensureExists<L,T>(val:T|null|undefined,l:L):Either<L,T>{
     if (val === null || typeof val == "undefined") {
         return left(l)
     }
     return right(val)
 }
 
-export function ensureContains<T,L>(val:T[]|null|undefined,searchVal:T,l:L):Either<L,T>{
+export function ensureContains<L,T>(val:T[]|null|undefined,searchVal:T,l:L):Either<L,T>{
     if (val === null || typeof val == "undefined") {
         return left(l)
     }
