@@ -259,3 +259,13 @@ describe("Either Merge", () => {
         expect(rightEither.merge()).toEqual("RIGHT")
     })
 })
+
+
+describe("Either Switch", () => {
+    test("Either switch", () => {
+        const leftEither = left("LEFT")
+        const rightEither = right("LEFT")
+        expect(leftEither.switch()).toEqual(rightEither)
+        expect(rightEither.switch()).toEqual(leftEither)
+    })
+})

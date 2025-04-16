@@ -56,6 +56,13 @@ export abstract class Either<out L, out R>{
         return this.get()
     }
 
+    switch():Either<R,L>{
+       return this.fold<Either<R,L>>(
+            it=> right(it),
+            it => left(it),
+        )
+    }
+
 }
 
 export function left<T>(val:T):Either<T,never>{
