@@ -18,7 +18,7 @@ export function ensureExists<L,T>(val:T|null|undefined,l:L):Either<L,T>{
     return right(val)
 }
 
-export function ensureContains<L,T>(val:T[]|null|undefined,searchVal:T,l:L):Either<L,T>{
+export function ensureContains<L,T>(val:ReadonlyArray<T>|T[]|null|undefined,searchVal:T,l:L):Either<L,T>{
     if (val === null || typeof val == "undefined") {
         return left(l)
     }
@@ -166,6 +166,7 @@ export function tryE<R>(executor:()=>R|Promise<R>):Either<any, R> | Promise<Eith
     }
 }
 
+export function accumulate<L,R>(eithers:ReadonlyArray<Either<L, R>>):Either<NonEmptyReadOnlyArray<L>,readonly R[]>
 export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyArray<L>,readonly R[]>{
    const { lefts, rights } =  eithers.reduce((preVal,currentVal)=>{
         const currentValUnwrapped = currentVal.unwrap()
@@ -188,6 +189,7 @@ export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyAr
     return right(rights)
 }
 
+export function separateEithers<L,R>(eithers:ReadonlyArray<Either<L, R>>): [ReadonlyArray<L>, ReadonlyArray<R>]
 export function separateEithers<L,R>(eithers:Either<L,R>[]): [ReadonlyArray<L>, ReadonlyArray<R>]{
     return eithers.reduce((previousVal:[ReadonlyArray<L>, ReadonlyArray<R>], either:Either<L,R>)=>{
         const [ls,rs] = previousVal
@@ -195,5 +197,5 @@ export function separateEithers<L,R>(eithers:Either<L,R>[]): [ReadonlyArray<L>, 
             (it)=> [[...ls, it],rs],
             (it)=> [ls, [...rs,it]]
         )
-    },[[],[]])
+    },[[],[]] as [ReadonlyArray<L>, ReadonlyArray<R>])
 }
