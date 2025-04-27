@@ -150,9 +150,11 @@ export function zipOrBind<L,A,B,C,D,E,F,G>(
     return zipOrBindInternal(eitherABCDEF, argG)
 }
 
+export function tryE<L,R>(executor:()=>R):Either<L, R>
+export function tryE<L,R>(executor:()=>Promise<R>):Promise<Either<L, R>>
 export function tryE<R>(executor:()=>R):Either<any, R>
 export function tryE<R>(executor:()=>Promise<R>):Promise<Either<any, R>>
-export function tryE<R>(executor:()=>R|Promise<R>):Either<any, R> | Promise<Either<any, R>>{
+export function tryE<L,R>(executor:()=>R|Promise<R>):Either<any, R> | Promise<Either<any, R>>{
     try{
         const response = executor()
         if (response instanceof Promise) {
@@ -162,12 +164,12 @@ export function tryE<R>(executor:()=>R|Promise<R>):Either<any, R> | Promise<Eith
         }
         return right(response);
     }catch(e){
-        return left(e)
+        return left(e) as Either<L,R>
     }
 }
 
-export function accumulate<L,R>(eithers:ReadonlyArray<Either<L, R>>):Either<NonEmptyReadOnlyArray<L>,readonly R[]>
-export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyArray<L>,readonly R[]>{
+export function accumulate<L,R>(eithers:ReadonlyArray<Either<L, R>>):Either<NonEmptyReadOnlyArray<L>,ReadonlyArray<R>>
+export function accumulate<L,R>(eithers:Either<L,R>[]):Either<NonEmptyReadOnlyArray<L>,ReadonlyArray<R>>{
    const { lefts, rights } =  eithers.reduce((preVal,currentVal)=>{
         const currentValUnwrapped = currentVal.unwrap()
         if(currentValUnwrapped.isRight()){
