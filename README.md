@@ -8,14 +8,14 @@ In the functional programming paradigm, concepts like functors, applicatives, an
 play a vital role in managing effects and side-effects. 
 Arrow-TS emerged from the challenges of finding a type-safe implementation for handling effects and side-effects in TypeScript. 
 As a result, Arrow-TS is a ground-up, type-safe monadic library that brings a comprehensive set of tools for managing 
-effects and side-effects in the TypeScript ecosystem. Arrow-TS is heavily inspired by the awesome magic of Arrow-KT and 
+effects and side-effects in the TypeScript ecosystem. Arrow-TS is heavily inspired by the awesome magic of [Arrow-KT](https://arrow-kt.io/) and 
 brings those powerful ideas into the TypeScript world, with a native TypeScript twist that feels right at home.
 
 
 
 ## What makes Arrow-TS special? 
 
-While FP-TS (now Effect), the OG of functional programming in TypeScript, covers nearly everything Arrow-TS aims to address, 
+While [FP-TS](https://gcanti.github.io/fp-ts/) (now [Effect-TS](https://github.com/Effect-TS)), the OG of functional programming in TypeScript, covers nearly everything Arrow-TS aims to address, 
 it often comes with a heavy dose of boilerplate that can disrupt the natural flow of TypeScript code. Arrow-TS, on the other hand, takes a more intuitive, 
 TypeScript-native approach that feels much more familiar to everyday TS developers. 
 Arrow-TS is not a replacement for FP-TS or any other existing library.
